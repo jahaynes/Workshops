@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DipApp", "DipApp\DipApp.csproj", "{E7C35D9A-DA7D-4AE9-B117-EC6E5784929F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DipApp.Tests", "DipApp.Tests\DipApp.Tests.csproj", "{3074C295-329B-4F3C-8CA2-5B446AA5CB6A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7C35D9A-DA7D-4AE9-B117-EC6E5784929F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7C35D9A-DA7D-4AE9-B117-EC6E5784929F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7C35D9A-DA7D-4AE9-B117-EC6E5784929F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7C35D9A-DA7D-4AE9-B117-EC6E5784929F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3074C295-329B-4F3C-8CA2-5B446AA5CB6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3074C295-329B-4F3C-8CA2-5B446AA5CB6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3074C295-329B-4F3C-8CA2-5B446AA5CB6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3074C295-329B-4F3C-8CA2-5B446AA5CB6A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
