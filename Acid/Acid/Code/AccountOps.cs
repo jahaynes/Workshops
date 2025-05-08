@@ -18,6 +18,49 @@ public class AccountOps : IAsyncDisposable
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task RedistributeWealth2()
+    {
+        const string sql = @"
+BEGIN TRAN
+
+DECLARE @bigBalance INT;
+DECLARE @part1 INT;
+DECLARE @part2 INT;
+
+SELECT @bigBalance = Max(Balance) FROM MyAccounts
+SELECT @part1 = @bigBalance / 2;
+SELECT @part2 = @bigBalance - @part1;
+
+UPDATE MyAccounts
+SET Balance = Balance - @bigBalance
+WHERE Id IN (
+    SELECT Min(Id)
+    FROM MyAccounts
+    WHERE Balance = @bigBalance
+);
+
+UPDATE MyAccounts
+SET Balance = Balance + @part1
+WHERE Id IN (
+    SELECT TOP 1 Id
+    FROM MyAccounts
+    ORDER BY NewId()
+);
+
+UPDATE MyAccounts
+SET Balance = Balance + @part2
+WHERE Id IN (
+    SELECT TOP 1 Id
+    FROM MyAccounts
+    ORDER BY NewId()
+);
+
+COMMIT TRAN;";
+
+        await _dbContext.Database.ExecuteSqlRawAsync(sql);
+        await _dbContext.SaveChangesAsync();
+    }
+
     public async Task RedistributeWealth()
     {
         await using var dbContextTransaction = await _dbContext.Database.BeginTransactionAsync();
