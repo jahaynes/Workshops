@@ -10,6 +10,7 @@ public class MyDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(Config.Conn);
+        
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
