@@ -1,8 +1,7 @@
-using Acid.Config;
 using Acid.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Acid.Code;
+namespace Acid.Db;
 
 public class MyDbContext : DbContext
 {
@@ -10,7 +9,7 @@ public class MyDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(Db.Conn);
+        optionsBuilder.UseSqlServer(Config.Conn);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
