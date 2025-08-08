@@ -45,8 +45,4 @@ public class RedistributeWealthEf
 
         await _dbContext.SaveChangesAsync();
     }
-
-    // Transactions?
-    // await using var dbContextTransaction = await _dbContext.Database.BeginTransactionAsync();
-    // await dbContextTransaction.CommitAsync();
 }
