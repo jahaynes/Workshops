@@ -1,42 +1,49 @@
-﻿using Acid.Actions;
+﻿using System.Data;
+using Acid.Actions;
 using Acid.Db;
 
 namespace Acid;
 
 public static class Program
 {
+    private const int NumAccounts = 6;
+    private const int NumThreads = 4;
+
     public static async Task Main()
     {
+        // await Prefill();
+        await Run();
+    }
+
+    private static async Task Prefill()
+    {
         await using var dbContext = new MyDbContext();
-
-        Thread.Sleep(1000);
-        await Run(dbContext);
+        await new Prefill(dbContext).Run(NumAccounts);
     }
 
-    private static async Task Prefill(MyDbContext dbContext)
+    private static async Task Run()
     {
-        await new Prefill(dbContext).Run(6);
-    }
+        Console.WriteLine("Setting up db connections");
+        var conns = Enumerable
+            .Range(1, NumThreads)
+            .AsParallel()
+            .Select(_ => new MyDbContext())
+            .ToList();
 
-    private static async Task Run(MyDbContext dbContext)
-    {
-        var redistributeWealthSql = new RedistributeWealthSql(dbContext);
-        // var redistributeWealthEf = new RedistributeWealthEf(dbContext);
+        Console.WriteLine("Setting application layer");
+        var businessLogics = conns.Select(conn => new RedistributeWealthEf(conn));
 
-        await Task.WhenAll(
-            Enumerable
-                .Range(1, 4)
-                .AsParallel()
-                .Select(_ => Step())
-        );
-        return;
+        Console.WriteLine("Running application");
+        await Parallel.ForEachAsync(businessLogics,
+            async (logic, _) =>
+                await logic.Run(IsolationLevel.RepeatableRead));
 
-        async Task Step()
+        Console.WriteLine("Shutting down");
+        foreach (var ctx in conns)
         {
-            for (var i = 0; i < 5; i++)
-            {
-                await redistributeWealthSql.Run(Queries.SQL_READ_COMMITTED);
-            }
+            await ctx.DisposeAsync();
         }
+
+        Console.WriteLine("Done");
     }
 }

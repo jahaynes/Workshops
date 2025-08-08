@@ -1,3 +1,4 @@
+using System.Data;
 using Acid.Db;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,41 @@ public class RedistributeWealthEf
         _dbContext = dbContext;
     }
 
-    public async Task Run()
+    public async Task Run(IsolationLevel? isolationLevel)
+    {
+        if (isolationLevel is null)
+        {
+            try
+            {
+                await Run_();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Failure!");
+            }
+        }
+        else
+        {
+            var success = false;
+            while (!success)
+            {
+                await using var transaction = await _dbContext.Database.BeginTransactionAsync(isolationLevel.Value);
+                try
+                {
+                    await Run_();
+                    await transaction.CommitAsync();
+                    Console.WriteLine("Success!");
+                    success = true;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Failure... retrying!");
+                }
+            }
+        }
+    }
+
+    private async Task Run_()
     {
         // Find the highest balance
         var maxAccount =
