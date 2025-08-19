@@ -7,22 +7,18 @@ public static class Program
 {
     public static async Task Main()
     {
-        await using var dbContext = new MyDbContext();
-
-        Thread.Sleep(1000);
-        await Run(dbContext);
+        // await Prefill();
+        await Run();
     }
 
-    private static async Task Prefill(MyDbContext dbContext)
+    private static async Task Prefill()
     {
+        await using var dbContext = new MyDbContext();
         await new Prefill(dbContext).Run(6);
     }
 
-    private static async Task Run(MyDbContext dbContext)
+    private static async Task Run()
     {
-        var redistributeWealthSql = new RedistributeWealthSql(dbContext);
-        // var redistributeWealthEf = new RedistributeWealthEf(dbContext);
-
         await Task.WhenAll(
             Enumerable
                 .Range(1, 4)
@@ -33,9 +29,11 @@ public static class Program
 
         async Task Step()
         {
+            await using var dbContext = new MyDbContext();
             for (var i = 0; i < 5; i++)
             {
-                await redistributeWealthSql.Run(Queries.SQL_READ_COMMITTED);
+                // await new RedistributeWealthSql(dbContext).Run(Queries.SQL_READ_COMMITTED);
+                await new RedistributeWealthEf(dbContext).Run();
             }
         }
     }

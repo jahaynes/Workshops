@@ -1,4 +1,6 @@
+using System.Data;
 using Acid.Db;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Acid.Actions;
@@ -14,39 +16,57 @@ public class RedistributeWealthEf
 
     public async Task Run()
     {
-        // Find the highest balance
-        var maxAccount =
-            await _dbContext.MyAccounts.OrderByDescending(x => x.Balance).FirstAsync();
+        var done = false;
+        while (!done)
+        {
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.Serializable);
 
-        // Choose some other recipients
-        var recipient1 =
-            await _dbContext.MyAccounts
-                .Where(a => a.Balance != maxAccount.Balance)
-                .OrderBy(_ => Guid.NewGuid())
-                .FirstAsync();
+            try
+            {
+                // Find the highest balance
+                var maxAccount =
+                    await _dbContext.MyAccounts
+                        .OrderByDescending(x => x.Balance)
+                        .FirstAsync();
 
-        var recipient2 =
-            await _dbContext.MyAccounts
-                .Where(a => a.Balance != maxAccount.Balance)
-                .OrderBy(_ => Guid.NewGuid())
-                .FirstAsync();
+                // Choose some other recipients
+                var recipient1 =
+                    await _dbContext.MyAccounts
+                        .Where(a => a.Id != maxAccount.Id)
+                        .OrderBy(_ => Guid.NewGuid())
+                        .FirstAsync();
 
-        // Split the balance in two
-        var onePart = maxAccount.Balance / 2;
-        var otherPart = maxAccount.Balance - onePart;
+                var recipient2 =
+                    await _dbContext.MyAccounts
+                        .Where(a => a.Id != maxAccount.Id && a.Id != recipient1.Id)
+                        .OrderBy(_ => Guid.NewGuid())
+                        .FirstAsync();
 
-        // Move one half
-        maxAccount.Balance -= onePart;
-        recipient1.Balance += onePart;
+                // Move one third
+                var onePart = maxAccount.Balance / 3;
+                maxAccount.Balance -= onePart;
+                recipient1.Balance += onePart;
 
-        // Move the other half
-        maxAccount.Balance -= otherPart;
-        recipient2.Balance += otherPart;
+                // Move another third
+                var otherPart = maxAccount.Balance / 2;
+                maxAccount.Balance -= otherPart;
+                recipient2.Balance += otherPart;
 
-        await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                done = true;
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: 1205 })
+            {
+                await transaction.RollbackAsync();
+                Console.WriteLine("Deadlocked. Will try again.");
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
-
-    // Transactions?
-    // await using var dbContextTransaction = await _dbContext.Database.BeginTransactionAsync();
-    // await dbContextTransaction.CommitAsync();
 }
