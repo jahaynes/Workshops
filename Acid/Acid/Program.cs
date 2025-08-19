@@ -1,0 +1,42 @@
+﻿using Acid.Actions;
+using Acid.Db;
+
+namespace Acid;
+
+public static class Program
+{
+    public static async Task Main()
+    {
+        await using var dbContext = new MyDbContext();
+
+        Thread.Sleep(1000);
+        await Run(dbContext);
+    }
+
+    private static async Task Prefill(MyDbContext dbContext)
+    {
+        await new Prefill(dbContext).Run(6);
+    }
+
+    private static async Task Run(MyDbContext dbContext)
+    {
+        var redistributeWealthSql = new RedistributeWealthSql(dbContext);
+        // var redistributeWealthEf = new RedistributeWealthEf(dbContext);
+
+        await Task.WhenAll(
+            Enumerable
+                .Range(1, 4)
+                .AsParallel()
+                .Select(_ => Step())
+        );
+        return;
+
+        async Task Step()
+        {
+            for (var i = 0; i < 5; i++)
+            {
+                await redistributeWealthSql.Run(Queries.SQL_READ_COMMITTED);
+            }
+        }
+    }
+}
