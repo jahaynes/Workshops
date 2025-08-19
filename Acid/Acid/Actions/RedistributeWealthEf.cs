@@ -42,13 +42,13 @@ public class RedistributeWealthEf
                         .OrderBy(_ => Guid.NewGuid())
                         .FirstAsync();
 
-                // Move one third
-                var onePart = maxAccount.Balance / 3;
+                // Move one half
+                var onePart = maxAccount.Balance / 2;
                 maxAccount.Balance -= onePart;
                 recipient1.Balance += onePart;
 
-                // Move another third
-                var otherPart = maxAccount.Balance / 2;
+                // Move the other half
+                var otherPart = maxAccount.Balance - onePart;
                 maxAccount.Balance -= otherPart;
                 recipient2.Balance += otherPart;
 
