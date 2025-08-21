@@ -33,6 +33,7 @@ instance Applicative Parser where
                     Left l -> Left l
                     Right (x, s'') -> Right (f x, s'')
 
+-- compare to linq 
 instance Monad Parser where
 
     return = pure
@@ -111,8 +112,21 @@ collapse2 x ((c,y):zs) = let a = (op c) x y in collapse2 a zs
 
 main :: IO ()
 main = do
-    let Parser run = expr (Num . read) collapse2
-    case run  (filter (not . isSpace) " 3 + 8 / 4 / 2") of
+    let Parser run = expr (read) _collapse
+
+    let input = " 3 + 8 / 4 / 2"
+
+    case run  (filter (not . isSpace) input) of
         Right (x, "") -> print x
         Right _ -> error "Leftover"
         Left x -> error $ show x
+
+{- Points of interest:
+    
+    * Taking the same 'parser' which evaluates as it goes, and replacing it with an AST builder
+
+    * Left-recursion
+
+    * Monads -> Linq -> Do-notation -> async/await
+
+-}
