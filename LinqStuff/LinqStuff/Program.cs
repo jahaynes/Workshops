@@ -1,21 +1,14 @@
-﻿using System.Collections.Immutable;
-using LinqStuff.Either;
-using static LinqStuff.ExprParser;
-using static LinqStuff.Parser.Strings;
-using static LinqStuff.Parser.Combinators;
+﻿using static LinqStuff.ExprParser;
 
 namespace LinqStuff;
 
 public static class Program
 {
-    private static void Main(string[] args)
+    private static void Main()
     {
-        //var number = Number.Run("123");
+        var parser = Expr();
 
-
-        var parser = Term;
-
-        var input = "(123)";
+        var input = "(1 + 2 * 3 - 4) / 2".Replace(" ", "");
 
         Console.WriteLine(parser.Run(input));
     }

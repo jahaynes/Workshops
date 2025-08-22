@@ -1,28 +1,70 @@
+using System.Collections.Immutable;
 using LinqStuff.Parser;
+using static LinqStuff.Parser.Combinators;
 using static LinqStuff.Parser.Strings;
 
 namespace LinqStuff;
 
 public static class ExprParser
 {
-    public static Parser<int> Expr()
+    public static Parser<int> Expr() =>
+        Addition;
+
+    public static Parser<int> Addition =>
+        Multiplication().SelectMany(first =>
+            Many(Plus.OrElse(Minus))
+                .Select(rest => Collapse(first, rest)));
+
+    public static Parser<Tuple<Op, int>> Plus =>
+        ParseChar('+').SelectMany(_ => Multiplication().Select(term => new Tuple<Op, int>(Op.Plus, term)));
+
+    public static Parser<Tuple<Op, int>> Minus =>
+        ParseChar('-').SelectMany(_ => Multiplication().Select(term => new Tuple<Op, int>(Op.Minus, term)));
+
+    public static Parser<int> Multiplication()
     {
-        throw new NotImplementedException();
+        var divide =
+            ParseChar('/').SelectMany(_ => Multiplication().Select(term => new Tuple<Op, int>(Op.Div, term)));
+
+        return Term.SelectMany(first =>
+            Many(Times().OrElse(divide))
+                .Select(rest => Collapse(first, rest)));
+
+        Parser<Tuple<Op, int>> Times()
+        {
+            return ParseChar('*').SelectMany(_ => Multiplication().Select(term => new Tuple<Op, int>(Op.Mul, term)));
+        }
     }
 
-    // term = number <|> bracketing
     public static Parser<int> Term =>
         Number.OrElse(Bracketing);
 
-    // number = some (charp isDigit)
     public static Parser<int> Number =>
-        Combinators
-            .Some(ParseCharPred(c => c is >= '0' and <= '9'))
+        Some(ParseCharPred(c => c is >= '0' and <= '9'))
             .Select(x => int.Parse(new string(x.ToArray())));
 
-    // bracketing = char '(' *> expr <* char ')'
     public static Parser<int> Bracketing =>
         ParseChar('(')
             .SelectMany(_ => Expr())
             .SelectMany(expr => ParseChar(')').Select(_ => expr));
+
+    private static int Collapse(int first, ImmutableList<Tuple<Op, int>> rest) =>
+        rest.Aggregate(first, (acc, b) =>
+            b.Item1 switch
+            {
+                Op.Plus => acc + b.Item2,
+                Op.Minus => acc - b.Item2,
+                Op.Mul => acc * b.Item2,
+                Op.Div => acc / b.Item2,
+                _ => throw new ArgumentOutOfRangeException()
+            }
+        );
+
+    public enum Op
+    {
+        Plus,
+        Minus,
+        Mul,
+        Div
+    }
 }
