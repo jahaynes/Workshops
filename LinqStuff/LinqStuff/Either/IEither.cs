@@ -1,4 +1,4 @@
-namespace LinqStuff;
+namespace LinqStuff.Either;
 
 public interface IEither<TL, TR>
 {

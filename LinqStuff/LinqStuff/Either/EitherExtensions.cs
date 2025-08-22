@@ -1,4 +1,4 @@
-namespace LinqStuff;
+namespace LinqStuff.Either;
 
 public static class EitherExtensions
 {

@@ -1,4 +1,6 @@
-namespace LinqStuff;
+using LinqStuff.Either;
+
+namespace LinqStuff.Parser;
 
 public static class ParserExtensions
 {
@@ -34,6 +36,14 @@ public static class ParserExtensions
                    Left l -> Left l
                    Right (x, s') -> let Parser run' = mf x in run' s'
     */
+    public static Parser<TA> Pure<TA>(TA x)
+    {
+        return new Parser<TA>(Run);
+
+        IEither<string, Tuple<TA, string>> Run(string s) =>
+            IEither<string, Tuple<TA, string>>.Right(new Tuple<TA, string>(x, s));
+    }
+
     public static Parser<TB> SelectMany<TA, TB>(
         this Parser<TA> parser,
         Func<TA, Parser<TB>> f)
