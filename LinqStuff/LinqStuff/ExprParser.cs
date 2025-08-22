@@ -11,30 +11,26 @@ public static class ExprParser
         Addition;
 
     public static Parser<int> Addition =>
-        Multiplication().SelectMany(first =>
+        Multiplication.SelectMany(first =>
             Many(Plus.OrElse(Minus))
                 .Select(rest => Collapse(first, rest)));
 
     public static Parser<Tuple<Op, int>> Plus =>
-        ParseChar('+').SelectMany(_ => Multiplication().Select(term => new Tuple<Op, int>(Op.Plus, term)));
+        ParseChar('+').SelectMany(_ => Multiplication.Select(term => new Tuple<Op, int>(Op.Plus, term)));
 
     public static Parser<Tuple<Op, int>> Minus =>
-        ParseChar('-').SelectMany(_ => Multiplication().Select(term => new Tuple<Op, int>(Op.Minus, term)));
+        ParseChar('-').SelectMany(_ => Multiplication.Select(term => new Tuple<Op, int>(Op.Minus, term)));
 
-    public static Parser<int> Multiplication()
-    {
-        var divide =
-            ParseChar('/').SelectMany(_ => Multiplication().Select(term => new Tuple<Op, int>(Op.Div, term)));
-
-        return Term.SelectMany(first =>
-            Many(Times().OrElse(divide))
+    public static Parser<int> Multiplication =
+        Term.SelectMany(first =>
+            Many(Times.OrElse(Divide))
                 .Select(rest => Collapse(first, rest)));
 
-        Parser<Tuple<Op, int>> Times()
-        {
-            return ParseChar('*').SelectMany(_ => Multiplication().Select(term => new Tuple<Op, int>(Op.Mul, term)));
-        }
-    }
+    public static Parser<Tuple<Op, int>> Times =
+        ParseChar('*').SelectMany(_ => Multiplication.Select(term => new Tuple<Op, int>(Op.Mul, term)));
+
+    public static Parser<Tuple<Op, int>> Divide =
+        ParseChar('/').SelectMany(_ => Multiplication.Select(term => new Tuple<Op, int>(Op.Div, term)));
 
     public static Parser<int> Term =>
         Number.OrElse(Bracketing);
