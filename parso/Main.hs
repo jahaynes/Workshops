@@ -1,8 +1,8 @@
-import Control.Applicative (Alternative (..))
+import Parser
+
 import Data.Char           (isDigit, isSpace)
 
-newtype Parser a =
-    Parser (String -> Either String (a, String))
+import Control.Applicative ((<|>), many, some)
 
 charp :: (Char -> Bool) -> Parser Char
 charp p = Parser f
@@ -13,49 +13,6 @@ charp p = Parser f
 
 char :: Char -> Parser Char
 char c = charp (==c)
-
-instance Functor Parser where
-    fmap :: (a -> b) -> Parser a -> Parser b
-    fmap f (Parser run) = Parser $ \s ->
-        case run s of
-            Left l        -> Left l
-            Right (x, s') -> Right (f x, s')
-
-instance Applicative Parser where
-
-    pure x = Parser (\s -> Right (x, s))
-
-    Parser pf <*> Parser px = Parser $ \s ->
-        case pf s of
-            Left l -> Left l
-            Right (f, s') ->
-                case px s' of
-                    Left l -> Left l
-                    Right (x, s'') -> Right (f x, s'')
-
--- compare to linq 
-instance Monad Parser where
-
-    return = pure
-
-    Parser run >>= mf = Parser $ \s ->
-        case run s of
-            Left l -> Left l
-            Right (x, s') -> let Parser run' = mf x in run' s'
-
-instance Alternative Parser where
-
-    empty :: Parser a
-    empty = Parser (\_ -> Left "No more alternatives")
-
-    Parser p1 <|> Parser p2 = Parser $ \s ->
-        case p1 s of
-            Left{} -> p2 s
-            r      -> r
-
-    -- Some for free!
-
-    -- Many for free!
 
 expr :: ([Char] -> a) -> (a -> [(Char, a)] -> a) -> Parser a
 expr tokeniser folder =
