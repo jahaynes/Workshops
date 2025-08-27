@@ -61,9 +61,15 @@ public static class ParserExtensions
         }
     }
 
-    public static Parser<TA> OrElse<TA>(
-        this Parser<TA> parser,
-        Parser<TA> other)
+    // TODO test
+    public static Parser<TB> Then<TA, TB>(this Parser<TA> parser, Parser<TB> f) =>
+        parser.SelectMany(_ => f);
+
+    // TODO test
+    public static Parser<TA> FollowedBy<TA, TB>(this Parser<TA> parser, Parser<TB> f) =>
+        parser.SelectMany(a => f.Select(_ => a));
+
+    public static Parser<TA> OrElse<TA>(this Parser<TA> parser, Parser<TA> other)
     {
         return new Parser<TA>(Run);
 

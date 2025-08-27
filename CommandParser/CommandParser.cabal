@@ -1,0 +1,38 @@
+cabal-version:      3.0
+name:               CommandParser
+version:            0.1.0.0
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             John Haynes
+maintainer:         john.h@bokio.se
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common common
+    ghc-options: -Wall -O2 -threaded
+    default-extensions: ScopedTypeVariables
+
+executable CommandParser
+    import:           common
+    main-is:          Main.hs
+    build-depends:    base
+    other-modules:    CommandParser, Parser, Strings
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+library
+    import:           common
+    exposed-modules:  CommandParser, Parser, Strings
+    build-depends:    base
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+test-suite CommandParserTest
+    import:             common
+    default-language:   Haskell2010
+    default-extensions: TemplateHaskell
+    type:               exitcode-stdio-1.0
+    hs-source-dirs:     test
+    main-is:            Test.hs
+    other-modules:      Generators
+    build-depends:      base, hedgehog, CommandParser

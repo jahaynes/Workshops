@@ -5,6 +5,8 @@ namespace LinqStuff.Parser;
 
 public static class Combinators
 {
+    
+    // TODO check order
     public static Parser<ImmutableList<TA>> Many<TA>(Parser<TA> p)
     {
         return ManyAcc(ImmutableList<TA>.Empty, p).Select(res => res.Reverse());
@@ -14,7 +16,7 @@ public static class Combinators
                 .OrElse(Pure(acc));
     }
 
-
+    // TODO check order
     public static Parser<ImmutableList<TA>> Some<TA>(Parser<TA> p) =>
         p.SelectMany(first =>
             Many(p).Select(rest => rest.Prepend(first).ToImmutableList()));

@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqStuff", "LinqStuff\LinqStuff.csproj", "{DD8F9A00-EEED-4E06-A6B7-B3421B8F10C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqStuff.Tests", "LinqStuff.Tests\LinqStuff.Tests.csproj", "{2D57348F-8721-4496-B436-0C4ACD4647CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{DD8F9A00-EEED-4E06-A6B7-B3421B8F10C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD8F9A00-EEED-4E06-A6B7-B3421B8F10C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD8F9A00-EEED-4E06-A6B7-B3421B8F10C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D57348F-8721-4496-B436-0C4ACD4647CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D57348F-8721-4496-B436-0C4ACD4647CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D57348F-8721-4496-B436-0C4ACD4647CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D57348F-8721-4496-B436-0C4ACD4647CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

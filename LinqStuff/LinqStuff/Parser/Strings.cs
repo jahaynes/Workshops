@@ -2,6 +2,8 @@ using LinqStuff.Either;
 
 namespace LinqStuff.Parser;
 
+using static LinqStuff.Parser.Combinators;
+
 public static class Strings
 {
     public static Parser<char> ParseCharPred(Func<char, bool> pred)
@@ -27,4 +29,7 @@ public static class Strings
 
     public static Parser<char> ParseChar(char c) =>
         ParseCharPred(x => x == c);
+
+    public static Parser<object> Ws() =>
+        Many(ParseCharPred(char.IsWhiteSpace)).Select(_ => new object());  // What's a better void type?
 }

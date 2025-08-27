@@ -1,0 +1,19 @@
+
+
+-- Put in spaces?
+-- Also allowed to have escaped stuff down the bottom?
+
+
+<CommandLine>     ::= ( <SimpleToken> | <QuotedToken> )+
+
+<SimpleToken>     ::= <SimpleTokenChar>+
+
+<SimpleTokenChar> ::= <SpecialCharPair> | <OrdinaryChar>
+
+<QuotedToken>     ::= \" <QuotedTokenChar>+ \"
+
+<QuotedTokenChar> ::= <SpecialCharPair> | <OrdinaryChar> | Space
+
+<SpecialCharPair> ::= '\\' | '\"'
+
+<OrdinaryChar>    ::=  any char but dblquote or space
