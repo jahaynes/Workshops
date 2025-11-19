@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Check", "Check\Check.csproj", "{00F0E42A-8F32-49E4-897A-D09AA79C2276}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Check.Tests", "Check.Tests\Check.Tests.csproj", "{24E6D5EB-3194-4CA7-B4A0-3FEF11ED3866}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00F0E42A-8F32-49E4-897A-D09AA79C2276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00F0E42A-8F32-49E4-897A-D09AA79C2276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00F0E42A-8F32-49E4-897A-D09AA79C2276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00F0E42A-8F32-49E4-897A-D09AA79C2276}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24E6D5EB-3194-4CA7-B4A0-3FEF11ED3866}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24E6D5EB-3194-4CA7-B4A0-3FEF11ED3866}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24E6D5EB-3194-4CA7-B4A0-3FEF11ED3866}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24E6D5EB-3194-4CA7-B4A0-3FEF11ED3866}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
