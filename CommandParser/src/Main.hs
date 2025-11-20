@@ -18,10 +18,10 @@ main = do
 
     let (bads, goods) = partitionEithers outputs
 
-    forM_ goods $ \(i, r) -> do
-        putStrLn "Good"
+    forM_ goods $ \(i, rs) -> do
         putStrLn $ "{" ++ i ++ "}"
-        print r
+        forM_ rs $ \r ->
+            putStrLn $ "[" ++ r ++ "]"
         putStrLn ""
         
     forM_ bads $ \(i, e) -> do
