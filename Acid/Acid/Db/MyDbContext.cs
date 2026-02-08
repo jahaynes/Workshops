@@ -1,5 +1,6 @@
 using Acid.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Acid.Db;
 
@@ -10,6 +11,11 @@ public class MyDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(Config.Conn);
+        
+        // Enable SQL logging
+        optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information)
+                     .EnableSensitiveDataLogging()
+                     .EnableDetailedErrors();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

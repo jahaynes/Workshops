@@ -49,12 +49,12 @@ public static class Program
             .ToList();
 
         Console.WriteLine("Setting application layer");
-        // var businessLogics = conns.Select(conn => new RedistributeWealthEf(conn));
-        var businessLogics = conns.Select(conn => new RedistributeWealthSql(conn));
+         var businessLogics = conns.Select(conn => new RedistributeWealthEf(conn));
+        //var businessLogics = conns.Select(conn => new RedistributeWealthSql(conn));
         
         Console.WriteLine("Running application");
         await Parallel.ForEachAsync(businessLogics,
-            async (logic, _) => await logic.Run(Queries.SQL_TRANS_SERIALIZABLE));
+            async (logic, _) => await logic.Run(IsolationLevel.ReadCommitted));
 
         Console.WriteLine("Shutting down");
         foreach (var ctx in conns)
