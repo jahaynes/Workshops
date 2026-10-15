@@ -1,5 +1,6 @@
 using Acid.Db;
 using Acid.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Acid.Actions;
 
@@ -15,6 +16,8 @@ public class Prefill
 
     public async Task Run(int n)
     {
+        _dbContext.MyAccounts.RemoveRange(await _dbContext.MyAccounts.ToListAsync());
+
         for (var i = 0; i < n; i++)
         {
             _dbContext.MyAccounts.Add(new Account { Balance = _rng.Next() % 1000 });
