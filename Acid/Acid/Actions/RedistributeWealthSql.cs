@@ -21,16 +21,12 @@ public class RedistributeWealthSql
             try
             {
                 await _dbContext.Database.ExecuteSqlRawAsync(query);
-                Console.WriteLine("Executed!");
                 done = true;
             }
-            catch (SqlException ex)
+            // 1205: chosen as deadlock victim. Any other error propagates.
+            catch (SqlException ex) when (ex.Number == 1205)
             {
-                done |= ex.Number != 120;
-                if (!done)
-                {
-                    Console.WriteLine("Deadlocked.  Will try again");
-                }
+                Console.WriteLine("Deadlocked.  Will try again");
             }
         }
     }
